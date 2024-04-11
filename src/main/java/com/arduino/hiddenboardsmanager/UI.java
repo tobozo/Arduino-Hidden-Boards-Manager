@@ -1,4 +1,4 @@
-package com.arduino.esp32boardstool;
+package com.arduino.hiddenboardsmanager;
 
 import java.util.ArrayList;
 import java.io.*;
@@ -17,17 +17,18 @@ import javax.swing.border.*;
 public class UI extends JPanel
 {
 
-  private static Color transparentColor = new Color( 0xff, 0xff, 0xff, 0x80 );
   private static final long serialVersionUID = 1L;
 
 
-  private HiddenBoardsManager boardsManager;
+  private BoardsManager boardsManager;
   private AboutPanel aboutPanel;
 
   private JButton aboutBtn;
   private JScrollPane boardsPanel;
   private JPanel topPanel;
   private JPanel bottomPanel;
+
+  static Color transparentColor = new Color( 0xff, 0xff, 0xff, 0x80 );
 
   static Font defaultFont;
   static Font defaultBoldFont;
@@ -54,7 +55,7 @@ public class UI extends JPanel
 
   private void init()
   {
-    boardsManager = new HiddenBoardsManager();
+    boardsManager = new BoardsManager();
     aboutPanel = new AboutPanel();
     createPanels();
   }

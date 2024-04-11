@@ -1,4 +1,4 @@
-package com.arduino.esp32boardstool;
+package com.arduino.hiddenboardsmanager;
 
 import javax.swing.*;
 import java.awt.Font;

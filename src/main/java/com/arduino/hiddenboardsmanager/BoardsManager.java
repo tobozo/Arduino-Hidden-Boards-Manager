@@ -1,12 +1,12 @@
-package com.arduino.esp32boardstool;
+package com.arduino.hiddenboardsmanager;
 
 import processing.app.BaseNoGui;
 import processing.app.debug.TargetPlatform;
 import processing.app.helpers.FileUtils;
 
-import com.arduino.esp32boardstool.UI;
-import com.arduino.esp32boardstool.UI.JButtonIcon;
-import com.arduino.esp32boardstool.UI.JTransparentPanel;
+import com.arduino.hiddenboardsmanager.UI;
+import com.arduino.hiddenboardsmanager.UI.JButtonIcon;
+import com.arduino.hiddenboardsmanager.UI.JTransparentPanel;
 
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
@@ -29,12 +29,12 @@ import java.nio.file.Files;
 
 
 @SuppressWarnings("serial")
-public class HiddenBoardsManager
+public class BoardsManager
 {
 
   private Map<String, String> boardLongNames = new HashMap<String, String>();
 
-  private HashSet<String> prominentBoards = new HashSet<String>( Arrays.asList("menu", "esp32", "esp32s2", "esp32s3", "esp32c3", "esp32wrover") );
+  //private HashSet<String> prominentBoards = new HashSet<String>( Arrays.asList("menu", "esp32", "esp32s2", "esp32s3", "esp32c3", "esp32wrover") );
   private HashSet<String> boards = new HashSet<String>();
   private HashSet<String> hiddenBoards = new HashSet<String>();
 
@@ -42,14 +42,26 @@ public class HiddenBoardsManager
   private JScrollPane hideScrollPane;
   private JTextArea boardsLocalTextArea;
 
-  private String packageName = BaseNoGui.getTargetPlatform().getId();
-  private String boardsLocalPath = BaseNoGui.getTargetPlatform().getFolder().toString() + "/boards.local.txt";
-  private String boardsPath = BaseNoGui.getTargetPlatform().getFolder().toString() + "/boards.txt";
+  private String packageName;
+  private String boardsLocalPath;
+  private String boardsPath;
   private String boardsLocalTxt;
 
-  public HiddenBoardsManager()
+  public BoardsManager()
   {
+    init();
+  }
+
+
+  public void init()
+  {
+    BaseNoGui.onBoardOrPortChange();
+    this.packageName     = BaseNoGui.getTargetPlatform().getId();
+    this.boardsLocalPath = BaseNoGui.getTargetPlatform().getFolder().toString() + "/boards.local.txt";
+    this.boardsPath      = BaseNoGui.getTargetPlatform().getFolder().toString() + "/boards.txt";
+
     boardsPanel = new JTransparentPanel();
+
     hideScrollPane = new JScrollPane( boardsPanel );
     hideScrollPane.setOpaque(false);
     hideScrollPane.setViewportBorder(null);
@@ -58,12 +70,11 @@ public class HiddenBoardsManager
     hideScrollPane.getViewport().setBorder(null);
     hideScrollPane.getViewport().getInsets().set(0, 0, 0, 0);
     hideScrollPane.getVerticalScrollBar().setUnitIncrement(100); // prevent the scroll wheel from going sloth
-    init();
-  }
 
+    boardLongNames.clear();
+    boards.clear();
+    hiddenBoards.clear();
 
-  public void init()
-  {
     processBoardsFile( boardsPath );
     processBoardsFile( boardsLocalPath );
 
@@ -120,25 +131,26 @@ public class HiddenBoardsManager
       String thisLine = null;
       while ((thisLine = br.readLine()) != null) {
         thisLine = thisLine.trim();
-        if( thisLine.isEmpty() ) continue;
-        Properties blah = new Properties();
-        blah.load(new StringReader(thisLine));
-        final Set<String> keys = blah.stringPropertyNames();
-        // reprint all entries except those with "hide" key
-        boolean ishidekey = false;
-        for (final String key : keys) {
-          if( key.endsWith(".hide") ) {
-            ishidekey = true;
-          } else if( key.endsWith(".name")) {
-            // collect board long names
-            String[] keyParts = key.split("\\.");
-            if( keyParts == null || keyParts.length==0 ) continue;
-            if(boardLongNames.get(keyParts[0])==null)
-              boardLongNames.put(keyParts[0], blah.getProperty(key));
+        boolean isHiddenBoard = false;
+        if( !thisLine.isEmpty() ) {
+          Properties blah = new Properties();
+          blah.load(new StringReader(thisLine));
+          final Set<String> keys = blah.stringPropertyNames();
+          // reprint all entries except those with "hide" key
+          for (final String key : keys) {
+            if( key.endsWith(".hide") ) {
+              isHiddenBoard = true;
+            } else if( key.endsWith(".name")) {
+              // collect board long names
+              String[] keyParts = key.split("\\.");
+              if( keyParts == null || keyParts.length==0 ) continue;
+              if(boardLongNames.get(keyParts[0])==null)
+                boardLongNames.put(keyParts[0], blah.getProperty(key));
+            }
           }
         }
-        if( ! ishidekey ) {
-          boardsLocalTxt += thisLine.trim() + "\n";
+        if( ! isHiddenBoard ) {
+          boardsLocalTxt += thisLine + "\n";
         }
       }
 
@@ -163,6 +175,7 @@ public class HiddenBoardsManager
       System.out.println("Saved " + boardsLocalPath );
     } catch( IOException e ) {
       System.err.println("Failed to save " + boardsLocalPath );
+      System.out.println( e.getMessage() );
     }
   }
 
@@ -201,7 +214,7 @@ public class HiddenBoardsManager
     JPanel topPanel = new JTransparentPanel();
     topPanel.setLayout(new GridLayout(4, 0, 0, 0));
     topPanel.setBorder( BorderFactory.createEmptyBorder(10, 20, 10, 20) );  // top,left,bottom,right
-    topPanel.add(JBoldLabel("Boards Package: " + packageName ));
+    topPanel.add(JBoldLabel("Boards Package: " + this.packageName ));
     topPanel.add(JBoldLabel("1) Uncheck items to hide from Tools/Board Menu"));
     topPanel.add(JBoldLabel("2) Click on Save icon"));
     topPanel.add(JBoldLabel("3) Restart Arduino IDE"));
@@ -257,17 +270,17 @@ public class HiddenBoardsManager
       }
 
       // make sure base boards aren't hidden
-      for( String prominentBoard : prominentBoards ) {
-        if( boards.contains(prominentBoard) ) {
-          boards.remove(prominentBoard);
-        }
-        if( hiddenBoards.contains(prominentBoard) ) {
-          hiddenBoards.remove(prominentBoard);
-        }
-      }
+      // for( String prominentBoard : prominentBoards ) {
+      //   if( boards.contains(prominentBoard) ) {
+      //     boards.remove(prominentBoard);
+      //   }
+      //   if( hiddenBoards.contains(prominentBoard) ) {
+      //     hiddenBoards.remove(prominentBoard);
+      //   }
+      // }
     } catch (IOException e) {
-      System.err.println("unable to open " + path);
-      System.out.println( e.getMessage() );
+      //System.err.println("unable to open " + path);
+      //System.out.println( e.getMessage() );
     }
   }
 

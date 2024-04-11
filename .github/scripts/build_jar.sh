@@ -26,7 +26,7 @@ javac -Xlint -cp "dependencies/*" -d "bin" @$class_list || die "Unable compile p
 # Copy resources directory contents into the bin folder
 cp -r "$resources_folder"/* "bin/" || die "Unable to copy resources directory into bin folder"
 # Create the JAR file with the manifest entries defaulting to Arduino IDE implementation
-jar cfe "$jar_file" com.arduino.esp32boardstool.ESP32BoardsTool -C "bin" . || die "Unable to create jar file"
+jar cfe "$jar_file" com.arduino.hiddenboardsmanager.HiddenBoardsManager -C "bin" . || die "Unable to create jar file"
 # An additional check doesn't hurt :)
 [[ -f "$jar_file" ]] || die "Jar file not found: $jar_file"
 # yay!

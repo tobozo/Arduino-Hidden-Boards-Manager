@@ -1,6 +1,6 @@
 /*
-    ESP32 Partition Tool was developed to facilitate the creation of custom partition schemes
-    for ESP32 projects within the Arduino IDE 1.8.x environment.
+    Arduino IDE Hidden Boards Manager Tool was developed to ease navigation in the boards
+    list menu.
 
     Copyright (c) 2024 tobozo, github.com/tobozo
 
@@ -31,7 +31,7 @@
   SOFTWARE.
 */
 
-package com.arduino;
+package com.arduino.hiddenboardsmanager;
 
 import processing.app.Editor;
 import processing.app.tools.Tool;
@@ -42,12 +42,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 
-import com.arduino.esp32boardstool.UI;
+import com.arduino.hiddenboardsmanager.UI;
 
 
 @SuppressWarnings("serial")
 final class JFrameArduino extends JFrame
 {
+
   public JFrameArduino( String title )
   {
     JFrame frame = this;
@@ -64,6 +65,10 @@ final class JFrameArduino extends JFrame
       @Override
       public void windowClosing(WindowEvent e) {
         frame.setVisible(false);
+        frame.remove(HiddenBoardsManager.contentPane);
+        HiddenBoardsManager.contentPane = null;
+        //frame.dispose();
+        //frame = null;
       }
     });
 
@@ -73,6 +78,10 @@ final class JFrameArduino extends JFrame
       public void keyPressed(KeyEvent e) {
         if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
           frame.setVisible(false);
+          frame.remove(HiddenBoardsManager.contentPane);
+          HiddenBoardsManager.contentPane = null;
+          //frame.dispose();
+          //frame = null;
         }
       }
     });
@@ -81,12 +90,12 @@ final class JFrameArduino extends JFrame
 
 
 @SuppressWarnings("serial")
-public class ESP32BoardsTool extends JFrame implements Tool
+public class HiddenBoardsManager extends JFrame implements Tool
 {
 
   private JFrame frame;
+  static UI contentPane;
   private Editor editor;
-  private UI contentPane;
 
   public void init(Editor editor)
   {
@@ -100,14 +109,18 @@ public class ESP32BoardsTool extends JFrame implements Tool
 
   private void initGUI()
   {
-    frame = new JFrameArduino( "Arduino Hidden Boards Manager" );
-    contentPane = new UI();
-    //frame.removeAll();
-    frame.add(contentPane);
+    if( HiddenBoardsManager.contentPane == null ) HiddenBoardsManager.contentPane = new UI();
+    if( frame == null ) frame = new JFrameArduino( "Arduino Hidden Boards Manager" );
+
+    contentPane.repaint();
+    contentPane.revalidate();
+
+
+    frame.add(HiddenBoardsManager.contentPane);
     frame.setFocusable(true);
     frame.requestFocus();
     frame.toFront();
-    EventQueue.invokeLater( () -> frame.setVisible(true) );
+    EventQueue.invokeLater( () -> { frame.revalidate(); frame.repaint(); frame.setVisible(true); } );
   }
 
   public void run()
