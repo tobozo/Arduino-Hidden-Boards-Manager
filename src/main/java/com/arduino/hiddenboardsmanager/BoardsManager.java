@@ -1,3 +1,27 @@
+/*
+  MIT License
+
+  Copyright (c) 2024 tobozo
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
 package com.arduino.hiddenboardsmanager;
 
 import processing.app.BaseNoGui;
@@ -33,8 +57,6 @@ public class BoardsManager
 {
 
   private Map<String, String> boardLongNames = new HashMap<String, String>();
-
-  //private HashSet<String> prominentBoards = new HashSet<String>( Arrays.asList("menu", "esp32", "esp32s2", "esp32s3", "esp32c3", "esp32wrover") );
   private HashSet<String> boards = new HashSet<String>();
   private HashSet<String> hiddenBoards = new HashSet<String>();
 
@@ -46,6 +68,7 @@ public class BoardsManager
   private String boardsLocalPath;
   private String boardsPath;
   private String boardsLocalTxt;
+
 
   public BoardsManager()
   {
@@ -269,15 +292,6 @@ public class BoardsManager
         }
       }
 
-      // make sure base boards aren't hidden
-      // for( String prominentBoard : prominentBoards ) {
-      //   if( boards.contains(prominentBoard) ) {
-      //     boards.remove(prominentBoard);
-      //   }
-      //   if( hiddenBoards.contains(prominentBoard) ) {
-      //     hiddenBoards.remove(prominentBoard);
-      //   }
-      // }
     } catch (IOException e) {
       //System.err.println("unable to open " + path);
       //System.out.println( e.getMessage() );

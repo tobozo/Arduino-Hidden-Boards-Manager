@@ -1,13 +1,4 @@
 /*
-    Arduino IDE Hidden Boards Manager Tool was developed to ease navigation in the boards
-    list menu.
-
-    Copyright (c) 2024 tobozo, github.com/tobozo
-
-  This program is open-source software distributed under the terms of the MIT License.
-  You are free to redistribute and/or modify it under the conditions of the MIT License,
-  provided that this disclaimer remains intact in the source files.
-
   MIT License
 
   Copyright (c) 2024 tobozo
@@ -67,8 +58,6 @@ final class JFrameArduino extends JFrame
         frame.setVisible(false);
         frame.remove(HiddenBoardsManager.contentPane);
         HiddenBoardsManager.contentPane = null;
-        //frame.dispose();
-        //frame = null;
       }
     });
 
@@ -80,8 +69,6 @@ final class JFrameArduino extends JFrame
           frame.setVisible(false);
           frame.remove(HiddenBoardsManager.contentPane);
           HiddenBoardsManager.contentPane = null;
-          //frame.dispose();
-          //frame = null;
         }
       }
     });
