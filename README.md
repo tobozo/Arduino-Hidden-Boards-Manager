@@ -19,8 +19,13 @@ Hidden board names are saved in the `boards.local.txt` file in the package folde
 
 ## ScreenShots
 
+#### Menu
 [![Menu](assets/Screenshot_Menu.png)]
+
+#### Hidden Boards Manager
 [![Tool](assets/Screenshot_HiddenBoardsManager.png)]
+
+#### Credits window
 [![About](assets/Screenshot_About.png)]
 
 
