@@ -48,6 +48,7 @@ Note that anything newer will cause the Arduino IDE to crash since its only supp
 ## Usage (Arduino IDE)
 - Select `Tools` > `Manage Hidden Boards` menu item (see screenshot)
 - Uncheck the boards to hide
+- Click the **Save** icon
 - Restart Arduino IDE
 
 
